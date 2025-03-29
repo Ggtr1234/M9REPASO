@@ -23,17 +23,6 @@ public class Gestor implements Runnable{
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String missatge = "";
             missatge = reader.readLine();
-//            synchronized (ServidorMultifil.class){
-//                missatge = reader.readLine();
-//                if (missatge != null) {
-//                    ServidorMultifil.cadena += "|" + missatge;
-//                }
-//                try {
-//                    Thread.sleep(new Random().nextInt(10,20));
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
             if (missatge != null) {
                 synchronized (ServidorMultifil.cadena) {
                     ServidorMultifil.cadena += "|" + missatge;
