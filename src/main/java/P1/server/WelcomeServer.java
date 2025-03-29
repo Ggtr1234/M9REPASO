@@ -3,14 +3,12 @@ package P1.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class WelcomeServer {
     private ServerSocket serverSocket;
     private Socket socket;
+    private static Map<String, HashSet<String>> ipsRegistrades = new HashMap<>();
     private static List<String> missatgesServidor = new ArrayList<String>(Arrays.asList("Hola1","Hola2","Hola3","Hola4","Hola5"));
     private String WELCOME_MESSAGE = "";
     public static final int PORT = 6000;
@@ -33,7 +31,7 @@ public class WelcomeServer {
     private void gestionaNovaConexio(Socket socket) {
         try{
             System.out.println("Conexion desde: " + socket.getInetAddress() + ":" + socket.getPort());
-            WELCOME_MESSAGE = missatgesServidor.get(new Random().nextInt(missatgesServidor.size()));
+            WELCOME_MESSAGE = enviarNouMissatge(String.valueOf(socket.getInetAddress()));
             output = socket.getOutputStream();
             OutputStreamWriter writer = new OutputStreamWriter(output);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
@@ -44,6 +42,19 @@ public class WelcomeServer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String enviarNouMissatge(String ip){
+        ipsRegistrades.putIfAbsent(ip, new HashSet<>());
+        HashSet<String> mensajesRecibidos = ipsRegistrades.get(ip);
+        List<String> mensajesDisponibles = new ArrayList<>(missatgesServidor);
+        mensajesDisponibles.removeAll(mensajesRecibidos);
+        if (mensajesDisponibles.isEmpty()) {
+            return "No hay más mensajes nuevos disponibles para tu IP.";
+        }
+        String nuevoMensaje = mensajesDisponibles.get(new Random().nextInt(mensajesDisponibles.size()));
+        mensajesRecibidos.add(nuevoMensaje);
+        return nuevoMensaje;
     }
 
     private void tancaConexio() {
