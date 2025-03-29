@@ -14,6 +14,7 @@ public class WelcomeServer {
     public static final int PORT = 6000;
     private OutputStream output;
     private InputStream input;
+    private static int acumulator = 0;
 
     public void iniciaServei(){
         try{
@@ -32,12 +33,23 @@ public class WelcomeServer {
         try{
             System.out.println("Conexion desde: " + socket.getInetAddress() + ":" + socket.getPort());
             WELCOME_MESSAGE = enviarNouMissatge(String.valueOf(socket.getInetAddress()));
+
             output = socket.getOutputStream();
-            OutputStreamWriter writer = new OutputStreamWriter(output);
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output));
             bufferedWriter.write(WELCOME_MESSAGE);
             bufferedWriter.newLine();
             bufferedWriter.flush();
+
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            int number = dis.readInt();
+            acumulator += number;
+            System.out.println("Serv recibe: " + number);
+            System.out.println("Serv acumulado: " + acumulator);
+
+            DataOutputStream dos = new DataOutputStream(output);
+            dos.writeInt(acumulator);
+            dos.flush();
+
             tancaConexio();
         } catch (IOException e) {
             throw new RuntimeException(e);
