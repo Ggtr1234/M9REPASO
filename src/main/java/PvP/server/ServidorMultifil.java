@@ -15,9 +15,6 @@ public class ServidorMultifil {
         while (true){
             Socket socket = serverSocket.accept();
             try {
-//                BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                System.out.println("MENSAJE QUE LLEGA AL SERVER: " + entrada.readLine());
-//                System.out.println(cadena);
                 Gestor gestor = new Gestor(socket);
                 new Thread(gestor).start();
 

@@ -15,6 +15,9 @@ public class WelcomeServer {
     private OutputStream output;
     private InputStream input;
     private static int acumulator = 0;
+    protected static int numeroVictoria = calcularNumero();
+    private static DataInputStream dis;
+    private static DataOutputStream dos;
 
     public void iniciaServei(){
         try{
@@ -29,30 +32,66 @@ public class WelcomeServer {
         }
     }
 
-    private void gestionaNovaConexio(Socket socket) {
-        try{
-            System.out.println("Conexion desde: " + socket.getInetAddress() + ":" + socket.getPort());
-            WELCOME_MESSAGE = enviarNouMissatge(String.valueOf(socket.getInetAddress()));
+    private static int calcularNumero() {
+        Random rand = new Random();
+        return rand.nextInt(1,20);
+    }
 
+    private void gestionaNovaConexio(Socket socket) {
+        try {
+            System.out.println("Conexion desde: " + socket.getInetAddress() + ":" + socket.getPort());
+            System.out.println("Num: " + numeroVictoria);
+            WELCOME_MESSAGE = enviarNouMissatge(String.valueOf(socket.getInetAddress()));
             output = socket.getOutputStream();
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output));
             bufferedWriter.write(WELCOME_MESSAGE);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            int number = dis.readInt();
+            int number;
+            boolean acertado = false;
+
+
+            while (!acertado) {
+                dis = new DataInputStream(socket.getInputStream());
+                dos = new DataOutputStream(socket.getOutputStream());
+                number = dis.readInt();
+                System.out.println("Cliente envió: " + number);
+
+                if (number == numeroVictoria) {
+                    dos.writeUTF("Victoria");
+                    dos.flush();
+                    acertado = true;
+                } else {
+                    dos.writeUTF("Fallo, intenta de nuevo.");
+                    dos.flush();
+                }
+            }
+
+            System.out.println("El cliente acertó, cerrando conexión.");
+            bufferedWriter.write("Victoria");
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+
+            number = dis.readInt();
             acumulator += number;
             System.out.println("Serv recibe: " + number);
             System.out.println("Serv acumulado: " + acumulator);
 
-            DataOutputStream dos = new DataOutputStream(output);
             dos.writeInt(acumulator);
             dos.flush();
 
-            tancaConexio();
+            socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private boolean verificarNumero(int numero){
+        if(numero == numeroVictoria){
+            return true;
+        }else {
+            return false;
         }
     }
 
@@ -71,7 +110,6 @@ public class WelcomeServer {
 
     private void tancaConexio() {
         try{
-            this.output.close();
             this.socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
