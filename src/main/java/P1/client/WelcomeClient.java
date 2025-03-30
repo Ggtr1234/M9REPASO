@@ -56,7 +56,7 @@ public class WelcomeClient {
 
     public static void main(String[] args) throws IOException {
         WelcomeClient client = new WelcomeClient();
-        client.connecta("127.0.0.1",6000);
+        client.connecta("192.168.1.140",6000);
         System.out.println("Connectat amb el servidor.");
 
         String missatgeDelServidor = client.llegeixMissatge();
