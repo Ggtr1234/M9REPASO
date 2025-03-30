@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+
 public class Gestor implements Runnable{
     private Socket socket;
     private InputStream in;
@@ -49,23 +50,20 @@ public class Gestor implements Runnable{
                 writer.write("Ets el client numero: " + numeroAsignat);
                 writer.newLine();
                 writer.flush();
+
+                DataInputStream dis = new DataInputStream(socket.getInputStream());
+                int number = dis.readInt();
+                System.out.println("Server reciba nuermo: " + number);
+                DataOutputStream dos = new DataOutputStream(out);
+                ServidorMultifil.acumulator += number;
+                dos.writeInt(ServidorMultifil.acumulator);
+                dos.flush();
             }
 
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            int number = dis.readInt();
-            ServidorMultifil.acumulator += number;
-            System.out.println("Serv recibe: " + number);
-            System.out.println("Serv acumulado: " + ServidorMultifil.acumulator);
 
-            DataOutputStream dos = new DataOutputStream(out);
-            dos.writeInt(ServidorMultifil.acumulator);
-            dos.flush();
-
-            this.socket.shutdownInput();
-            this.socket.shutdownOutput();
             this.socket.close();
         } catch (IOException e) {
-            System.out.println("Error escrivint al client ");
+            System.out.println("Error escrivint al client " + e.getMessage());e.printStackTrace();
         }
         System.out.println("FI atenent al client ");
     }

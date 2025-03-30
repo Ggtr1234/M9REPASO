@@ -1,6 +1,7 @@
 package P2.client;
 import java.io.*;
 import java.net.Socket;
+import java.util.Random;
 
 public class Client {
     private Socket socket;
@@ -26,10 +27,27 @@ public class Client {
         return missatge;
     }
 
+    public void enviaNumero(){
+        DataOutputStream dos = new DataOutputStream(out);
+        try {
+            dos.writeInt(new Random().nextInt(5));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int llegeixNumero() {
+        try {
+            DataInputStream dataInputStream = new DataInputStream(in);
+            int number = dataInputStream.readInt();
+            return number;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void desconnecta(){
         try {
-            this.in.close();
-            this.out.close();
             this.socket.close();
         } catch (IOException e) {
             e.printStackTrace();

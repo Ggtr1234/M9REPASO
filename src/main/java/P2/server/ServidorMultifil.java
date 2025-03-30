@@ -11,6 +11,7 @@ public class ServidorMultifil {
     protected static List<String> missatgesServidor = new ArrayList<String>(Arrays.asList("Hola1","Hola2","Hola3","Hola4","Hola5"));
     protected static String WELCOME_MESSAGE = "";
     protected static int acumulator = 0;
+    protected final static Object lock = new Object();
 
     public void inicia() throws IOException {
         serverSocket = new ServerSocket(PORT);
