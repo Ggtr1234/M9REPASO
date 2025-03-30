@@ -14,7 +14,7 @@ public class MainClient {
                     public void run() {
                         try {
                             client.connectaAServidor("127.0.0.1", 65000);
-                            String missatge = client.llegeixMissatgeDelServidor();
+                            String missatge = client.llegeixMissatge();
                             System.out.println("El servidor diu: " + missatge);
                             client.desconnecta();
                         } catch (IOException e) {

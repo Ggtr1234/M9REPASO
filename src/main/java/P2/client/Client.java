@@ -14,10 +14,15 @@ public class Client {
         this.out = socket.getOutputStream();
     }
 
-    public String llegeixMissatgeDelServidor() throws IOException {
+    public String llegeixMissatge(){
+        InputStreamReader reader = new InputStreamReader(in);
+        BufferedReader bufferedReader = new BufferedReader(reader);
         String missatge = "";
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        missatge = reader.readLine();
+        try{
+            missatge = bufferedReader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return missatge;
     }
 
