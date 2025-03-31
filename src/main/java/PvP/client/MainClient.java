@@ -39,7 +39,6 @@ public class MainClient {
             clients.add(t);
         }
         for (Thread t : clients) {
-            Thread.sleep(10);
             t.start();
         }
     }

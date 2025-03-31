@@ -29,12 +29,6 @@ public class Gestor implements Runnable{
                     writer.write(ServidorMultifil.cadena);
                     writer.newLine();
                     writer.flush();
-                    try {
-                        Thread.sleep(new Random().nextInt(10, 20)); // Retardo aleatorio
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        System.out.println("Error en sleep: " + e.getMessage());
-                    }
                 }
             }
 
